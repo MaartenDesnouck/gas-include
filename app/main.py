@@ -32,5 +32,12 @@ def airportName():
         return 'IATA code not found : %s' % iata_code, 400
     return 'Success:' + maybe_name, 200
 
+@app.route('/echo', methods=['GET'])
+def echo():
+    param = request.args.get('param')
+    if param is None:
+        return 'No param provided.', 200
+    return 'Success:' + maybe_name, 200
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)

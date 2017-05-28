@@ -1,4 +1,3 @@
-#!/bin/bash
 # Copyright 2017 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,29 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source util.sh
+runtime: python
+env: flex
+entrypoint: gunicorn -b :$PORT main:app
 
-main() {
-  echo "Deploying $API_FILE..."
-  echo "gcloud service-management deploy $API_FILE"
-  gcloud service-management deploy "$API_FILE"
-}
+runtime_config:
+  python_version: 3
 
-cleanup() {
-  rm "$TEMP_FILE"
-}
-
-# Defaults.
-API_FILE="../openapi.yaml"
-
-if [[ "$#" == 0 ]]; then
-  : # Use defaults.
-elif [[ "$#" == 1 ]]; then
-  API_FILE="$1"
-else
-  echo "Wrong number of arguments specified."
-  echo "Usage: deploy_api.sh [api-file]"
-  exit 1
-fi
-
-main "$@"
+endpoints_api_service:
+  # This is a template. Use the deploy_app.sh script to deploy this app.
+  name: public.endpoints.gas-include.cloud.goog
+  config_id: 2017-05-28r0
