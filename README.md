@@ -7,5 +7,5 @@ To deploy the api:
 ```$ ./scripts/deploy_api.sh```
 
 Testing:   
-```$ curl "https://gas-inlcude.appspot.com/airportName?iataCode=SFO"```   
-```$ curl "https://gas-inlcude.appspot.com/echo?param=something"```
+```$ curl "https://gas-include.appspot.com/airportName?iataCode=SFO"```   
+```$ curl "https://gas-include.appspot.com/echo?param=something"```

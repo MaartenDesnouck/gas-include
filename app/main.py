@@ -37,7 +37,7 @@ def echo():
     param = request.args.get('param')
     if param is None:
         return 'No param provided.', 200
-    return 'Success:' + maybe_name, 200
+    return 'Success:' + param, 200
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
