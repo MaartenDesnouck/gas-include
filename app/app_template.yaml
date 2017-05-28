@@ -23,3 +23,4 @@ endpoints_api_service:
   # This is a template. Use the deploy_app.sh script to deploy this app.
   name: SERVICE_NAME
   config_id: SERVICE_CONFIG_ID
+

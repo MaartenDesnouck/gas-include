@@ -20,6 +20,7 @@ from airports import Airports
 
 app = Flask(__name__)
 airport_util = Airports()
+test_util = Test();
 
 @app.route('/airportName', methods=['GET'])
 def airportName():
@@ -36,7 +37,7 @@ def airportName():
 def echo():
     param = request.args.get('param')
     if param is None:
-        return 'No param provided.', 200
+        return test_util.show_variables(), 200
     return 'Success:' + param, 200
 
 if __name__ == '__main__':
