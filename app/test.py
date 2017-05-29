@@ -1,8 +1,5 @@
 import os
-
 import MySQLdb
-import webapp2
-
 
 # These environment variables are configured in app.yaml.
 CLOUDSQL_CONNECTION_NAME = os.environ.get('CLOUDSQL_CONNECTION_NAME')

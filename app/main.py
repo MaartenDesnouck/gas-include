@@ -12,33 +12,95 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import datetime
 import logging
+import os
+import socket
 
-from flask import Flask
-from flask import request
-from airports import Airports
+from flask import Flask, request
+from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy
+
 
 app = Flask(__name__)
-airport_util = Airports()
-test_util = Test();
 
-@app.route('/airportName', methods=['GET'])
-def airportName():
-    """Given an airport IATA code, return that airport's name."""
-    iata_code = request.args.get('iataCode')
-    if iata_code is None:
-        return 'No IATA code provided.', 400
-    maybe_name = airport_util.get_airport_by_iata(iata_code)
-    if maybe_name is None:
-        return 'IATA code not found : %s' % iata_code, 400
-    return 'Success:' + maybe_name, 200
+
+def is_ipv6(addr):
+    """Checks if a given address is an IPv6 address."""
+    try:
+        socket.inet_pton(socket.AF_INET6, addr)
+        return True
+    except socket.error:
+        return False
+
+
+# [START example]
+# Environment variables are defined in app.yaml.
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+
+class Visit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime())
+    user_ip = db.Column(db.String(46))
+
+    def __init__(self, timestamp, user_ip):
+        self.timestamp = timestamp
+        self.user_ip = user_ip
+
 
 @app.route('/echo', methods=['GET'])
 def echo():
     param = request.args.get('param')
     if param is None:
-        return test_util.show_variables(), 200
+        return 'Nope.', 200
     return 'Success:' + param, 200
 
+
+@app.route('/hello', methods=['GET'])
+def index():
+    user_ip = request.remote_addr
+
+    # Keep only the first two octets of the IP address.
+    if is_ipv6(user_ip):
+        user_ip = ':'.join(user_ip.split(':')[:2])
+    else:
+        user_ip = '.'.join(user_ip.split('.')[:2])
+
+    visit = Visit(
+        user_ip=user_ip,
+        timestamp=datetime.datetime.utcnow()
+    )
+
+    db.session.add(visit)
+    db.session.commit()
+
+    visits = Visit.query.order_by(sqlalchemy.desc(Visit.timestamp)).limit(10)
+
+    results = [
+        'Time: {} Addr: {}'.format(x.timestamp, x.user_ip)
+        for x in visits]
+
+    output = 'Last 10 visits:\n{}'.format('\n'.join(results))
+
+    return output, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+
+    return 'blub2', 200
+
+
+@app.errorhandler(500)
+def server_error(e):
+    logging.exception('An error occurred during a request.')
+    return """
+    An internal error occurred: <pre>{}</pre>
+    See logs for full stacktrace.
+    """.format(e), 500
+
+
 if __name__ == '__main__':
+    # This is used when running locally. Gunicorn is used to run the
+    # application on Google App Engine. See entrypoint in app.yaml.
     app.run(host='127.0.0.1', port=8080, debug=True)

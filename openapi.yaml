@@ -8,16 +8,10 @@ basePath: "/"
 schemes:
   - "https"
 paths:
-  "/airportName":
+  "/hello":
     get:
-      description: "Get the airport name for a given IATA code."
-      operationId: "airportName"
-      parameters:
-        -
-          name: iataCode
-          in: query
-          required: true
-          type: string
+      description: "database test url"
+      operationId: "hello"
       responses:
         200:
           description: "Success."
