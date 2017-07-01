@@ -1,6 +1,34 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "logs": {
+      "errors": {
+        ".write": true,
+        //".validate": "newData.hasChildren(['version','message'])",
+      },
+      "auth": {
+        ".write": true,
+        //".validate": "newData.hasChildren(['version','info'])",
+      },
+    },
+    "testlogs": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "post-comments": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "posts": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "user-posts": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
   }
 }
