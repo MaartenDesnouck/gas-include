@@ -10,6 +10,9 @@
         //".validate": "newData.hasChildren(['version','info'])",
       },
     },
+    "version": {
+      ".read": true,
+    },
     "testlogs": {
       ".read": "auth != null",
       ".write": true
